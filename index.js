@@ -11,11 +11,17 @@ app.get('/', (req, res) => res.send('Bot de WhatsApp activo 🚀'));
 app.post('/whatsapp', (req, res) => {
   const twiml = new MessagingResponse();
   const body = (req.body?.Body || '').trim();
+  const bodyLower = body.toLowerCase(); // normalizamos a minúsculas
 
-  const reply =
-    body.toLowerCase() === 'hola'
-      ? '¡Hola! Soy tu bot de prueba 🤖'
-      : `Recibí: "${body}" ✅`;
+  let reply;
+
+  if (bodyLower === 'hola') {
+    reply = '¡Hola! Soy tu bot de prueba 🤖';
+  } else if (bodyLower.includes('cliente:')) {
+    reply = 'Pedido recibido, ten en cuenta que dura al menos 3 días en prepararse el pedido fresco. Gracias';
+  } else {
+    reply = `Recibí: "${body}" ✅`;
+  }
 
   twiml.message(reply);
   res.type('text/xml').send(twiml.toString());
